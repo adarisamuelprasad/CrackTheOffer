@@ -1,20 +1,85 @@
 @use "./style/button.scss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 * {
-    margin: 0%;
-    padding: 0%;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-html,
-body,
-#root {
-    width: 100%;
-    background-color: #161616;
-    color: whitesmoke;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+:root {
+    --primary-gradient: linear-gradient(135deg, #FF2E93 0%, #FF8000 100%);
+    --bg-gradient: radial-gradient(circle at top left, #f8f9fa 0%, #e2e8f0 100%);
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(0, 0, 0, 0.12);
+    --glass-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.08);
+    --text-primary: #1a202c;
+    --accent: #FF2E93;
+    
+    --panel-bg: rgba(255, 255, 255, 0.5);
+    --input-bg: rgba(255, 255, 255, 0.7);
+    --text-muted: #4a5568;
+    --badge-best: #00B8D9;
+    --info-bg: rgba(0, 184, 217, 0.1);
+    --info-border: rgba(0, 184, 217, 0.3);
+    --btn-shadow: 0 20px 40px 0 rgba(31, 38, 135, 0.15);
+    --input-focus-shadow: 0 0 0 3px rgba(255, 46, 147, 0.25);
+    --input-focus-bg: rgba(255, 255, 255, 0.9);
+    --placeholder-color: rgba(74, 85, 104, 0.5);
 }
 
-.highlight{
-    color: #d20d3b;
+[data-theme='dark'] {
+    --bg-gradient: radial-gradient(circle at top left, #1a1a2e 0%, #0d0d17 100%);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --text-primary: #f8f9fa;
+    
+    --panel-bg: rgba(255, 255, 255, 0.02);
+    --input-bg: rgba(0, 0, 0, 0.2);
+    --text-muted: #a0aec0;
+    --badge-best: #00F0FF;
+    --info-bg: rgba(0, 240, 255, 0.05);
+    --info-border: rgba(0, 240, 255, 0.2);
+    --btn-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.5);
+    --input-focus-shadow: 0 0 0 3px rgba(255, 46, 147, 0.15);
+    --input-focus-bg: rgba(0, 0, 0, 0.3);
+    --placeholder-color: rgba(255, 255, 255, 0.3);
+}
+
+html, body, #root {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+}
+
+.highlight {
+    background: var(--primary-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+/* Add a subtle ambient glow to the background */
+body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 46, 147, 0.05) 0%, transparent 60%);
+    z-index: -1;
+    pointer-events: none;
+    animation: drift 20s linear infinite;
+}
+
+@keyframes drift {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

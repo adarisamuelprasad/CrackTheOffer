@@ -40,4 +40,14 @@ async function authUser(req, res, next) {
 }
 
 
-module.exports = { authUser }
+async function isAdmin(req, res, next) {
+    if (req.user && req.user.role === 'admin') {
+        next()
+    } else {
+        return res.status(403).json({
+            message: "Forbidden: Admin access required."
+        })
+    }
+}
+
+module.exports = { authUser, isAdmin }

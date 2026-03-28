@@ -1,16 +1,25 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
+import { AuthContext } from '../../auth/auth.context.jsx'
 
 const Home = () => {
 
     const { loading, generateReport,reports } = useInterview()
+    const { user } = useContext(AuthContext)
     const [ jobDescription, setJobDescription ] = useState("")
     const [ selfDescription, setSelfDescription ] = useState("")
+    const [ uploadedFileName, setUploadedFileName ] = useState("")
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
+
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setUploadedFileName(e.target.files[0].name)
+        }
+    }
 
     const handleGenerateReport = async () => {
         const resumeFile = resumeInputRef.current.files[ 0 ]
@@ -31,8 +40,21 @@ const Home = () => {
 
             {/* Page Header */}
             <header className='page-header'>
-                <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
-                <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
+                <div className="greeting" style={{ 
+                    display: 'inline-block',
+                    padding: '0.4rem 1rem', 
+                    backgroundColor: 'rgba(255, 46, 147, 0.1)', 
+                    color: 'var(--accent)', 
+                    borderRadius: '2rem',
+                    fontWeight: '600',
+                    fontSize: '0.85rem',
+                    marginBottom: '1.5rem',
+                    border: '1px solid rgba(255, 46, 147, 0.2)'
+                }}>
+                    Welcome back, {user?.email?.split('@')[0]} 👋
+                </div>
+                <h1>Don't just apply. <br/> <span className='highlight'>Crack The Offer.</span></h1>
+                <p style={{ marginTop: '0.5rem' }}>Your strategic AI-powered interview plan is just one second away.</p>
             </header>
 
             {/* Main Card */}
@@ -75,13 +97,21 @@ const Home = () => {
                                 Upload Resume
                                 <span className='badge badge--best'>Best Results</span>
                             </label>
-                            <label className='dropzone' htmlFor='resume'>
+                            <label className={`dropzone ${uploadedFileName ? 'dropzone--uploaded' : ''}`} htmlFor='resume'>
                                 <span className='dropzone__icon'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 16 12 12 8 16" /><line x1="12" y1="12" x2="12" y2="21" /><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" /></svg>
+                                    {uploadedFileName ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+                                    ) : (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 16 12 12 8 16" /><line x1="12" y1="12" x2="12" y2="21" /><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" /></svg>
+                                    )}
                                 </span>
-                                <p className='dropzone__title'>Click to upload or drag &amp; drop</p>
-                                <p className='dropzone__subtitle'>PDF or DOCX (Max 5MB)</p>
-                                <input ref={resumeInputRef} hidden type='file' id='resume' name='resume' accept='.pdf,.docx' />
+                                <p className='dropzone__title' style={{ color: uploadedFileName ? '#22c55e' : '' }}>
+                                    {uploadedFileName ? 'Resume Uploaded Successfully!' : 'Click to upload or drag & drop'}
+                                </p>
+                                <p className='dropzone__subtitle'>
+                                    {uploadedFileName ? uploadedFileName : 'PDF or DOCX (Max 5MB)'}
+                                </p>
+                                <input onChange={handleFileChange} ref={resumeInputRef} hidden type='file' id='resume' name='resume' accept='.pdf,.docx' />
                             </label>
                         </div>
 
@@ -121,22 +151,6 @@ const Home = () => {
                     </button>
                 </div>
             </div>
-
-            {/* Recent Reports List */}
-            {reports.length > 0 && (
-                <section className='recent-reports'>
-                    <h2>My Recent Interview Plans</h2>
-                    <ul className='reports-list'>
-                        {reports.map(report => (
-                            <li key={report._id} className='report-item' onClick={() => navigate(`/interview/${report._id}`)}>
-                                <h3>{report.title || 'Untitled Position'}</h3>
-                                <p className='report-meta'>Generated on {new Date(report.createdAt).toLocaleDateString()}</p>
-                                <p className={`match-score ${report.matchScore >= 80 ? 'score--high' : report.matchScore >= 60 ? 'score--mid' : 'score--low'}`}>Match Score: {report.matchScore}%</p>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
-            )}
 
             {/* Page Footer */}
             <footer className='page-footer'>

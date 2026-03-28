@@ -1,0 +1,13 @@
+{
+  "name": "interview-ai-yt-root",
+  "version": "1.0.0",
+  "description": "Root package to run both frontend and backend concurrently",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --prefix Backend",
+    "dev:frontend": "npm run dev --prefix Frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
